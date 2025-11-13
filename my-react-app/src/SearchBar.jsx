@@ -45,16 +45,35 @@ function SearchBar({ onSelect }) {
 
     const id = setTimeout(async () => {
       try {
+        const V3 = import.meta.env.VITE_TMDB_KEY;
+        const V4 = import.meta.env.VITE_TMDB_V4_TOKEN;
+
         const url = new URL(TMDB_SEARCH_URL);
-        url.searchParams.set("api_key", TMDB_KEY);
         url.searchParams.set("query", query.trim());
         url.searchParams.set("include_adult", "false");
         url.searchParams.set("language", "en-US");
         url.searchParams.set("page", "1");
 
-        const res = await fetch(url.toString(), { signal: ctrl.signal });
+        let res;
+
+        // Prefer v4 bearer if present
+        if (V4) {
+          res = await fetch(url.toString(), {
+          signal: ctrl.signal,
+          headers: { Authorization: `Bearer ${V4}` },
+        });
+        } else if (V3) {
+          // fall back to v3 ?api_key=
+          url.searchParams.set("api_key", V3);
+          res = await fetch(url.toString(), { signal: ctrl.signal });
+        } else {
+          throw new Error("Missing TMDB API key/token");
+        }
+
         if (!res.ok) throw new Error(`TMDB ${res.status}`);
         const json = await res.json();
+
+
 
         const mapped = (json.results ?? [])
           .filter((r) => ["movie", "tv", "person"].includes(r.media_type))
@@ -96,7 +115,7 @@ function SearchBar({ onSelect }) {
   }
 
   return (
-    <div className="mx-auto w-[min(92vw,800px)]">
+    <div className="mx-auto w-[min(92vw,650px)]">
       <Combobox value={selected} onChange={handleChange}>
         <div className="relative">
           {/* Glow + input */}

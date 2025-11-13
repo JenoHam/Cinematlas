@@ -165,21 +165,22 @@ function TrendingRow() {
               }
               return (
                 <li key={it.id} className="min-w-[180px] snap-start">
-                  <div className="group relative w-[180px]">
-                    <img
-                      src={it.poster || placeholder}
-                      alt={`${it.title} poster`}
-                      className="w-[180px] h-[270px] rounded-xl object-cover ring-1 ring-white/10
-                                 transition-transform duration-300 group-hover:scale-[1.03]"
-                      loading="lazy"
-                      onError={(e) => { e.currentTarget.src = placeholder; }}
-                    />
-                    <div className="pointer-events-none absolute inset-0 rounded-xl
-                                    bg-gradient-to-t from-black/70 via-black/10 to-transparent
-                                    opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <p className="mt-2 text-sm leading-tight line-clamp-2">{it.title}</p>
-                  <p className="text-xs text-white/60">{it.year}</p>
+                    <div className="relative w-[180px]">
+                        <img
+                            src={it.poster || placeholder}
+                            alt={`${it.title} poster`}
+                            className="w-[180px] h-[270px] rounded-xl object-cover ring-1 ring-white/10
+                                        transform transition-transform duration-300
+                                        hover:scale-[1.05]
+                                        hover:drop-shadow-[0_0_22px_rgba(255,255,255,0.9)]"
+                            loading="lazy"
+                            onError={(e) => {
+                                e.currentTarget.src = placeholder;
+                            }}
+                        />
+                    </div>
+                    <p className="mt-2 text-sm leading-tight line-clamp-2">{it.title}</p>
+                    <p className="text-xs text-white/60">{it.year}</p>
                 </li>
               );
             })}
