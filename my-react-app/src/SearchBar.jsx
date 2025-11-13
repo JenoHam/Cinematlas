@@ -54,13 +54,13 @@ export default function SearchBar({onSelect}){
                 url.searchParams.set("page", "1");
 
                 const res = await fetch(url.toString(), {signal: ctrl.signal});
-                if(!res.ok) throw new Error('TMDB $(res.status');
+                if (!res.ok) throw new Error(`TMDB ${res.status}`);
                 const json = await res.json();
 
                 const mapped = (json.results ?? [])
                 .filter(r => ["movie", "tv", "person"].includes(r.media_type))
                 .map(r => ({
-                    id: '${r.media_type}-${r.id}',
+                    id: `${r.media_type}-${r.id}`,
                     media_type: r.media_type,
                     title: labelFor(r),
                     poster: r.poster_path || r.profile_path ? TMDB_IMG + (r.poster_path || r.profile_path) : null,

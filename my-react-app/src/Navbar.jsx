@@ -4,7 +4,7 @@ const Navbar = () => {
   const data = [
     { icon: "fas fa-film", name: "Movies" },
     { icon: "fas fa-tv", name: "TV Series" },
-    { icon: "", name: "Soundtrack" },
+    { icon: "", name: "Soundtracks" },
     { icon: "fas fa-search", name: "Search" },
   ];
 
