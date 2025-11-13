@@ -18,98 +18,121 @@ function badgeFor(type){
     return "Unknown";
 }
 
-export default function SearchBar({onSelect}){
-    const [query, setQuery] = useState("");
-    const [results, setResults] = useState([]);
-    const [selected, setSelected] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const abortRef = useRef(null);
+function SearchBar({ onSelect }) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const abortRef = useRef(null);
 
-    const displayList = useMemo(() => {
-        if(!query.trim()) return [];
-        return results;
-    }, [query, results]);
+  const displayList = useMemo(() => {
+    if (!query.trim()) return [];
+    return results;
+  }, [query, results]);
 
-    useEffect(() => {
-        if(abortRef.current) abortRef.current.abort();
+  useEffect(() => {
+    if (abortRef.current) abortRef.current.abort();
 
-        //Oly search when at least 2 characters are typed
-        if(query.trim().length < 2){
-            setResults([]);
-            setLoading(false);
-            return;
-        }
-
-        setLoading(true);
-        const ctrl = new AbortController();
-        abortRef.current = ctrl;
-
-        const id = setTimeout(async () => {
-            try {
-                const url = new URL(TMDB_SEARCH_URL);
-                url.searchParams.set("api_key", TMDB_KEY);
-                url.searchParams.set("query", query.trim());
-                url.searchParams.set("include_adult", "false");
-                url.searchParams.set("language", "en-US");
-                url.searchParams.set("page", "1");
-
-                const res = await fetch(url.toString(), {signal: ctrl.signal});
-                if (!res.ok) throw new Error(`TMDB ${res.status}`);
-                const json = await res.json();
-
-                const mapped = (json.results ?? [])
-                .filter(r => ["movie", "tv", "person"].includes(r.media_type))
-                .map(r => ({
-                    id: `${r.media_type}-${r.id}`,
-                    media_type: r.media_type,
-                    title: labelFor(r),
-                    poster: r.poster_path || r.profile_path ? TMDB_IMG + (r.poster_path || r.profile_path) : null,
-                    year:
-                        r.release_date?.slice(0, 4) ??
-                        r.first_air_date?.slice(0, 4) ??
-                        "",
-                    raw: r,
-                }));
-
-                setResults(mapped);
-            } catch (e) {
-                if(e.name !== "AbortError"){
-                    console.error(e);
-                    setResults([]);
-                }
-            }   finally {
-                setLoading(false);
-            }
-        }, 300);
-
-        return() => {
-            clearTimeout(id);
-            ctrl.abort();
-        };
-    }, [query]);
-
-    function handleChange(item) {
-        setSelected(item);
-        onSelect?.(item);
+    if (query.trim().length < 2) {
+      setResults([]);
+      setLoading(false);
+      return;
     }
 
+    setLoading(true);
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+
+    const id = setTimeout(async () => {
+      try {
+        const url = new URL(TMDB_SEARCH_URL);
+        url.searchParams.set("api_key", TMDB_KEY);
+        url.searchParams.set("query", query.trim());
+        url.searchParams.set("include_adult", "false");
+        url.searchParams.set("language", "en-US");
+        url.searchParams.set("page", "1");
+
+        const res = await fetch(url.toString(), { signal: ctrl.signal });
+        if (!res.ok) throw new Error(`TMDB ${res.status}`);
+        const json = await res.json();
+
+        const mapped = (json.results ?? [])
+          .filter((r) => ["movie", "tv", "person"].includes(r.media_type))
+          .map((r) => ({
+            id: `${r.media_type}-${r.id}`,
+            media_type: r.media_type,
+            title: labelFor(r),
+            poster:
+              r.poster_path || r.profile_path
+                ? TMDB_IMG + (r.poster_path || r.profile_path)
+                : null,
+            year:
+              r.release_date?.slice(0, 4) ??
+              r.first_air_date?.slice(0, 4) ??
+              "",
+            raw: r,
+          }));
+
+        setResults(mapped);
+      } catch (e) {
+        if (e.name !== "AbortError") {
+          console.error(e);
+          setResults([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(id);
+      ctrl.abort();
+    };
+  }, [query]);
+
+  function handleChange(item) {
+    setSelected(item);
+    onSelect?.(item);
+  }
+
   return (
-    <div className="w-full max-w-xl">
+    <div className="mx-auto w-[min(92vw,800px)]">
       <Combobox value={selected} onChange={handleChange}>
         <div className="relative">
-          {/* Input */}
-          <div className="relative w-full overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-indigo-400">
-            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/60" />
-            <Combobox.Input
-              className="w-full bg-transparent py-3 pl-10 pr-10 text-white placeholder:text-white/50 focus:outline-none"
-              displayValue={(item) => item?.title ?? ""}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search Movies, TV, Soundtracks, People…"
-              autoComplete="off"
+          {/* Glow + input */}
+          <div className="relative group">
+            {/* glow layer */}
+            <div
+              className="pointer-events-none absolute -inset-1 rounded-2xl
+                         bg-gradient-to-r from-[#023E8A] to-blue-500
+                         opacity-40 blur-xl transition-opacity
+                         group-hover:opacity-70"
             />
-            <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon className="h-5 w-5 text-white/60" />
-            </Combobox.Button>
+
+            {/* actual input container */}
+            <div
+              className="relative w-full overflow-hidden rounded-2xl
+                         bg-white/5 backdrop-blur
+                         ring-1 ring-cyan-400/40 group-hover:[#023E8A]
+                         transition"
+            >
+              <MagnifyingGlassIcon
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2
+                           h-6 w-6 text-[#7a92b3]
+                           drop-shadow-[0_0_12px_rgba(34,211,238,.9)]"
+              />
+              <Combobox.Input
+                className="w-full bg-transparent py-4 pl-14 pr-12 text-white
+                           placeholder:text-white/60 focus:outline-none"
+                displayValue={(item) => item?.title ?? ""}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search Movies, TV, Soundtracks, People…"
+                autoComplete="off"
+              />
+              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3">
+                <ChevronUpDownIcon className="h-5 w-5 text-white/60" />
+              </Combobox.Button>
+            </div>
           </div>
 
           {/* Loading / No results bubbles */}
@@ -173,3 +196,5 @@ export default function SearchBar({onSelect}){
     </div>
   );
 }
+
+export default SearchBar;

@@ -9,9 +9,11 @@ function Landing() {
       <Navbar />
       <VideoBackground />
 
-      <section className="h-[36vh] grid place-items-center px-4">
-        <SearchBar onSelect={(item) => console.log(item)} />
-      </section>
+    <section className="h-[36vh] grid place-items-center px-4">
+    <div className="translate-y-10 md:translate-y-20">
+        <SearchBar />
+    </div>
+    </section>
 
       <div className="px-4">
         <TrendingRow compact />
