@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ onNavSelect }) => {
   const data = [
@@ -23,16 +24,25 @@ const Navbar = ({ onNavSelect }) => {
 
           {/* RIGHT: NAV BUTTONS */}
           <div className="flex items-center gap-16">
-            {data.map((Val) => (
-              <button
-                key={Val.name}
-                onClick={() => onNavSelect?.(Val.name)}
-                className="group flex flex-col items-center text-[#467dc4] hover:text-[#e5eaf1] transition-colors"
-              >
-                {Val.icon && <i className={Val.icon} />}
-                <span className="text-sm mt-1">{Val.name}</span>
-              </button>
-            ))}
+            {data.map((Val) => {
+              let path = "/";
+
+              if (Val.name === "Movies") path = "/movies";
+              if (Val.name === "TV Series") path = "/tv";
+              if (Val.name === "Soundtracks") path = "/soundtracks";
+              if (Val.name === "Search") path = "/search";
+
+              return (
+                <Link
+                  key={Val.name}
+                  to={path}
+                  className="group flex flex-col items-center text-[#467dc4] hover:text-[#e5eaf1] transition-colors"
+                  >
+                  {Val.icon && <i className={Val.icon} />}
+                  <span className="text-sm mt-1">{Val.name}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
 
