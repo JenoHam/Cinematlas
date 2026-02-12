@@ -74,13 +74,14 @@ function SearchBar({ onSelect }) {
         const json = await res.json();
 
 
-
+        //Search results ordering
         const mapped = (json.results ?? [])
           .filter((r) => ["movie", "tv", "person"].includes(r.media_type))
           .map((r) => ({
             id: `${r.media_type}-${r.id}`,
             media_type: r.media_type,
             title: labelFor(r),
+            popularity: r.popularity ?? 0,
             poster:
               r.poster_path || r.profile_path
                 ? TMDB_IMG + (r.poster_path || r.profile_path)
@@ -90,7 +91,20 @@ function SearchBar({ onSelect }) {
               r.first_air_date?.slice(0, 4) ??
               "",
             raw: r,
-          }));
+          }))
+
+          .sort((a, b) => {
+            const q = query.toLowerCase();
+
+            const aExact = a.title.toLowerCase().startsWith(q);
+            const bExact = b.title.toLowerCase().startsWith(q);
+
+            if(aExact && !bExact) return -1;
+            if(!aExact && bExact) return 1;
+
+            //fallback: sort by popularity descending
+            return b.popularity - a.popularity;
+          });
 
         setResults(mapped);
       } catch (e) {
