@@ -33,7 +33,8 @@ function TrendingRow() {
       setLoading(false);
       return;
     }
-
+    
+    //API
     const ctrl = new AbortController();
     (async () => {
       const V3 = import.meta.env.VITE_TMDB_KEY;        // short v3 key
@@ -41,7 +42,7 @@ function TrendingRow() {
 
       try {
         const endpoint =
-          "https://api.themoviedb.org/3/trending/movie/day?language=en-US";
+          "h.themoviedb.org/3/trending/movie/day?language=en-US";
 
         // try v4
         const res = await fetch(endpoint, {
