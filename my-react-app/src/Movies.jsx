@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Navbar from "./Navbar";
 import { motion } from "framer-motion";
 
 const TMDB_IMG = "https://image.tmdb.org/t/p/w342";
@@ -37,6 +38,7 @@ function Movies() {
   }, []);
 
   return (
+    
     <motion.div
       className="min-h-dvh text-white p-8"
       initial={{ opacity: 0, y: 20 }}
@@ -44,6 +46,7 @@ function Movies() {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.35 }}
     >
+      
       <h1 className="text-3xl font-semibold mb-6">
         Trending This Week
       </h1>
