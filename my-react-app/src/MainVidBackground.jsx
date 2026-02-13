@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 
-const VideoBackground = ({ pulseTrigger }) => {
+const MainVidBackground = ({ pulseTrigger }) => {
   const controls = useAnimationControls();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const VideoBackground = ({ pulseTrigger }) => {
       animate={controls}
     >
       <video
-        src="/videos/trailers.mp4"
+        src="/videos/stars.mp4"
         autoPlay
         muted
         loop
@@ -37,5 +37,4 @@ const VideoBackground = ({ pulseTrigger }) => {
   );
 };
 
-export default VideoBackground;
-
+export default MainVidBackground;
