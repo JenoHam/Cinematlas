@@ -42,7 +42,7 @@ function TrendingRow() {
 
       try {
         const endpoint =
-          "h.themoviedb.org/3/trending/movie/day?language=en-US";
+            "https://api.themoviedb.org/3/trending/movie/day?language=en-US";
 
         // try v4
         const res = await fetch(endpoint, {
