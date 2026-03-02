@@ -15,11 +15,13 @@ const Navbar = ({ onNavSelect }) => {
         <div className="h-full flex items-center justify-between pr-8">
           {/* LEFT: LOGO */}
           <div className="flex items-center gap-2 translate-y-1">
-            <img
-              src="/photos/cinelogo2.png"
-              alt="Cinematlas logo"
-              className="h-10 w-auto object-contain md:h-25"
-            />
+            <a href="Landing.jsx">
+              <img
+                src="/photos/cinelogo2.png"
+                alt="Cinematlas logo"
+                className="h-10 w-auto object-contain md:h-25"
+              />
+            </a>
           </div>
 
           {/* RIGHT: NAV BUTTONS */}
